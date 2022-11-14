@@ -1,16 +1,29 @@
-import requests
-from pathlib import Path
+import argparse
 from itertools import islice
 from os.path import splitext
-from urllib.parse import urlparse, unquote
-from environs import Env
+from pathlib import Path
+from urllib.parse import unquote, urlparse
 
-from fetch_spacex_photos import fetch_spacex_last_launch
+import requests
+from environs import Env
 from fetch_nasa_apod_photos import fetch_nasa_apod
 from fetch_nasa_epic_photos import fetch_nasa_epic
+from fetch_spacex_photos import fetch_spacex_launch
 
 env = Env()
 env.read_env()
+
+
+def parser_cmd_args():
+    """Parser information add information to func"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--launch_id",
+        type=str,
+        default="latest",
+        help="Input the launch_id, if you miss it, func will use 'latest' launch"
+    )
+    return parser.parse_args()
 
 
 def get_file_extension(url_photo: str) -> str:
@@ -33,9 +46,9 @@ def download_photos(image_urls: list, path: str, params: dict = {}) -> None:
 
 
 if __name__ == '__main__':
-    download_photos(fetch_spacex_last_launch(), "images/space_x_photos/")
+    args = parser_cmd_args()
+    launch_id = args.launch_id
+    download_photos(fetch_spacex_launch(launch_id), "images/space_x_photos/")
     NASA_KEY = env.str("NASA_KEY")
     download_photos(fetch_nasa_apod(NASA_KEY), "images/nasa_apod_photos/")
     download_photos(fetch_nasa_epic(NASA_KEY), "images/nasa_epic_photos/", {"api_key": NASA_KEY})
-
-
