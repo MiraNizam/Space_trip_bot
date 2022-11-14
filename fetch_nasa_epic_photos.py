@@ -1,5 +1,6 @@
-import requests
 import datetime
+
+import requests
 
 
 def fetch_nasa_epic(api_key: str) -> list:
