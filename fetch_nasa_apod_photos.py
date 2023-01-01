@@ -9,9 +9,7 @@ def fetch_nasa_apod(api_key: str, limit: int = 5) -> list:
     response = requests.get(nasa_api_apod, params=params)
     response.raise_for_status()
     apod_photos = response.json()
-    image_urls = []
-
-    for photo in apod_photos:
-        image = photo['hdurl']
-        image_urls.append(image)
+    image_urls = [photo['hdurl'] for photo in apod_photos]
     return image_urls
+
+
