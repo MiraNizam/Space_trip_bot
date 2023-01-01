@@ -13,18 +13,16 @@ from fetch_nasa_apod_photos import fetch_nasa_apod
 from fetch_nasa_epic_photos import fetch_nasa_epic
 from fetch_spacex_photos import fetch_spacex_launch
 
-env = Env()
-env.read_env()
-
 
 def parser_cmd_args():
     """Parser information add information to func"""
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="launch_id for SPACE_X API, you can add if you need specific launch")
     parser.add_argument(
         "launch_id",
         type=str,
         default="latest",
-        help="Input the launch_id, if you miss it, func will use 'latest' launch",
+        help="it must be 'str', for example: '5eb87d42ffd86e000604b384',"
+             " you can find launch_id on the link: https://github.com/r-spacex/SpaceX-API/tree/master/docs/launches",
     )
     return parser.parse_args()
 
@@ -57,7 +55,9 @@ def change_picture_size(path: str = "images/"):
                 file.save(f"{root}/{picture}")
 
 
-if __name__ == "__main__":
+def main():
+    env = Env()
+    env.read_env()
     args = parser_cmd_args()
     launch_id = args.launch_id
     NASA_KEY = env.str("NASA_KEY")
@@ -69,3 +69,7 @@ if __name__ == "__main__":
         {"api_key": NASA_KEY}
     )
     change_picture_size()
+
+
+if __name__ == "__main__":
+    main()
